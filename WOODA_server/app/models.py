@@ -1,6 +1,8 @@
-from datetime import datetime
-from app import db
+from datetime import datetime,  timezone
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from app import db
+
 
 # 사용자 모델
 class User(UserMixin, db.Model):
@@ -11,7 +13,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(256), nullable=False)
     
     # 사용자와 일기, 일정, 친구 관계 설정
-    diaries = db.relationship('Diary', backref='author', lazy=True)
+    items = db.relationship('Item', back_populates='user')
     schedules = db.relationship('Schedule', backref='owner', lazy=True)
     
     # friends 관계에서 foreign_keys로 명확히 지정
@@ -29,15 +31,34 @@ class User(UserMixin, db.Model):
         lazy=True
     )
 
-# 일기 모델
-class Diary(db.Model):
-    __tablename__ = 'diaries'
 
+class Item(db.Model):
+    __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', back_populates='items')
+    type = db.Column(db.String(20), nullable=False)  # "schedule" or "diary"
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    image = db.Column(db.String(255), nullable=True)  # Optional
+    date = db.Column(db.DateTime, nullable=False)  # 클라이언트에서 전달받은 시각 저장
+    likes = db.Column(db.Integer, default=0)  # Default likes to 0
+
+    user = db.relationship('User', back_populates='items')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "type": self.type,
+            "title": self.title,
+            "description": self.description,
+            "image": self.image,
+            "date": self.date.isoformat(),  # 클라이언트에서 받은 날짜 반환
+            "likes": self.likes,
+        }
+
+
 
 # 일정 모델
 class Schedule(db.Model):

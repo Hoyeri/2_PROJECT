@@ -34,7 +34,7 @@ def login():
     # 사용자 검증 서비스 호출
     user = verify_user(username, password)
     if user:
-        token = create_access_token(identity=user.id)
+        token = create_access_token(identity=str(user.id))
         return jsonify({"message": "Login successful", "token": token}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401

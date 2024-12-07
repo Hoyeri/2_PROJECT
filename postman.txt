@@ -1,0 +1,17 @@
+{
+  "username": "kim",
+  "password": "1016"
+}
+
+{
+  "username": "hong",
+  "password": "0316"
+}
+
+
+{
+  "type": "diary",
+  "title": "Test Item",
+  "description": "This is a test",
+  "image": null
+}

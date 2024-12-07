@@ -15,18 +15,19 @@ def create_app():
     app.config.from_object(Config)
     app.config['SECRET_KEY'] = 'your_secret_key'
     app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600 
+    db.init_app(app)
     
     CORS(app)
     jwt = JWTManager(app)
     
     # 데이터베이스와 로그인 매니저를 앱에 초기화
-    db.init_app(app)
     login_manager.init_app(app)
 
     # 블루프린트 등록
-    from app.routes import auth_bp, diary_bp, schedule_bp, friends_bp
+    from app.routes import auth_bp, items_bp, schedule_bp, friends_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(diary_bp, url_prefix='/diary')
+    app.register_blueprint(items_bp, url_prefix='/items')
     app.register_blueprint(schedule_bp, url_prefix='/schedule')
     app.register_blueprint(friends_bp, url_prefix='/friends')
     

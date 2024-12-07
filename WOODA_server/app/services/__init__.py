@@ -1,8 +1,8 @@
 # app/services/__init__.py
 
 from .auth_service import create_user, verify_user
-from .diary_service import (
-    create_diary, get_diary_by_id, get_all_diaries_with_friends, update_diary, delete_diary
+from .items_service import (
+    create_item, fetch_items_by_date, get_item_by_id, get_all_items_with_friends, update_item, delete_item
 )
 from .schedule_service import (
     create_schedule, get_schedule_by_id, get_all_schedules_with_friends, update_schedule, delete_schedule
